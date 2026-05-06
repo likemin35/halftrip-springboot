@@ -1,0 +1,9 @@
+.idea/
+.m2home/
+.m2repo/
+target/
+uploads/
+*.log
+.env
+.DS_Store
+Thumbs.db
