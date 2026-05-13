@@ -131,7 +131,13 @@ public final class TripMapper {
     }
 
     public static RegionDtos.MerchantItem toMerchantItem(Merchant merchant) {
-        return new RegionDtos.MerchantItem(merchant.getId(), merchant.getName(), merchant.getAddress(), merchant.getCategory());
+        return new RegionDtos.MerchantItem(
+                merchant.getId(),
+                merchant.getName(),
+                merchant.getAddress(),
+                merchant.getCategory(),
+                merchant.getLatitude(),
+                merchant.getLongitude());
     }
 
     public static RegionDtos.OnlineMallItem toOnlineMallItem(OnlineMall mall) {

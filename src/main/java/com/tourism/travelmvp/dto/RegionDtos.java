@@ -48,7 +48,12 @@ public final class RegionDtos {
                                    Double longitude) {
     }
 
-    public record MerchantItem(Long id, String name, String address, String category) {
+    public record MerchantItem(Long id,
+                               String name,
+                               String address,
+                               String category,
+                               Double latitude,
+                               Double longitude) {
     }
 
     public record OnlineMallItem(Long id, String name, String mallUrl, String description) {
