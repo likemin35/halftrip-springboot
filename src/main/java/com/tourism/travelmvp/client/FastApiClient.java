@@ -95,6 +95,42 @@ public class FastApiClient {
         }
     }
 
+    public IntegrationDtos.AuthPhotoReviewResponse analyzeAuthPhoto(
+            Path filePath,
+            int requiredPeopleCount
+    ) {
+        try {
+            MultipartBodyBuilder bodyBuilder = new MultipartBodyBuilder();
+            bodyBuilder.part("file", new FileSystemResource(filePath));
+            bodyBuilder.part("required_people_count", Integer.toString(requiredPeopleCount));
+            Map<?, ?> response = fastApiWebClient.post()
+                    .uri("/api/v1/documents/photos/auth-review")
+                    .contentType(MediaType.MULTIPART_FORM_DATA)
+                    .body(BodyInserters.fromMultipartData(bodyBuilder.build()))
+                    .retrieve()
+                    .bodyToMono(Map.class)
+                    .block();
+            Map<?, ?> data = nestedMap(response, "data");
+            return new IntegrationDtos.AuthPhotoReviewResponse(
+                    booleanValue(data.get("approved")),
+                    intValue(data.get("detected_people_count"), 0),
+                    intValue(data.get("required_people_count"), requiredPeopleCount),
+                    booleanValue(data.get("faces_clear")),
+                    booleanValue(data.get("background_visible")),
+                    stringValue(data, "reason", "")
+            );
+        } catch (Exception exception) {
+            return new IntegrationDtos.AuthPhotoReviewResponse(
+                    false,
+                    0,
+                    requiredPeopleCount,
+                    false,
+                    false,
+                    "인증사진 AI 판정에 실패했습니다. 다시 시도해 주세요."
+            );
+        }
+    }
+
     public byte[] mergePdfs(List<Path> filePaths) throws IOException {
         try {
             MultipartBodyBuilder bodyBuilder = new MultipartBodyBuilder();
@@ -181,6 +217,20 @@ public class FastApiClient {
             return number.doubleValue();
         }
         return 0.0;
+    }
+
+    private int intValue(Object value, int defaultValue) {
+        if (value instanceof Number number) {
+            return number.intValue();
+        }
+        if (value == null) {
+            return defaultValue;
+        }
+        try {
+            return Integer.parseInt(String.valueOf(value));
+        } catch (NumberFormatException ignored) {
+            return defaultValue;
+        }
     }
 
     private boolean booleanValue(Object value) {

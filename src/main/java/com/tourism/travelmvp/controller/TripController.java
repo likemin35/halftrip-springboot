@@ -1,6 +1,7 @@
 package com.tourism.travelmvp.controller;
 
 import com.tourism.travelmvp.dto.ApiResponse;
+import com.tourism.travelmvp.dto.IntegrationDtos;
 import com.tourism.travelmvp.dto.TripDtos;
 import com.tourism.travelmvp.enums.FileCategory;
 import com.tourism.travelmvp.service.TripService;
@@ -83,6 +84,14 @@ public class TripController {
             @RequestPart MultipartFile file
     ) throws IOException {
         return ApiResponse.ok(tripService.uploadFile(tripId, category, file));
+    }
+
+    @PostMapping("/trips/{tripId}/auth-photos/analyze/{uploadedFileId}")
+    public ApiResponse<IntegrationDtos.AuthPhotoReviewResponse> analyzeAuthPhoto(
+            @PathVariable Long tripId,
+            @PathVariable Long uploadedFileId
+    ) {
+        return ApiResponse.ok(tripService.analyzeAuthPhoto(tripId, uploadedFileId));
     }
 
     @GetMapping("/trips/{tripId}/uploaded-files/{uploadedFileId}/binary")

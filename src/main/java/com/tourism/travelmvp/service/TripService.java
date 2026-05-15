@@ -204,6 +204,20 @@ public class TripService {
     }
 
     @Transactional(readOnly = true)
+    public IntegrationDtos.AuthPhotoReviewResponse analyzeAuthPhoto(Long tripId, Long uploadedFileId) {
+        UploadedFile uploadedFile = findUploadedFile(uploadedFileId);
+        if (!uploadedFile.getTrip().getId().equals(tripId)) {
+            throw new NotFoundException("Uploaded file does not belong to the trip");
+        }
+        if (uploadedFile.getFileCategory() != FileCategory.AUTH_PHOTO) {
+            throw new NotFoundException("Uploaded file is not an auth photo");
+        }
+        Trip trip = uploadedFile.getTrip();
+        Path filePath = storageService.resolvePath(uploadedFile);
+        return fastApiClient.analyzeAuthPhoto(filePath, trip.getTravelerCount());
+    }
+
+    @Transactional(readOnly = true)
     public ResponseEntity<ByteArrayResource> downloadUploadedFile(Long tripId, Long uploadedFileId) throws IOException {
         UploadedFile uploadedFile = findUploadedFile(uploadedFileId);
         if (!uploadedFile.getTrip().getId().equals(tripId)) {

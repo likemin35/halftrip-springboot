@@ -22,6 +22,16 @@ public final class IntegrationDtos {
                                          List<String> warnings) {
     }
 
+    public record AuthPhotoReviewResponse(
+            boolean approved,
+            int detectedPeopleCount,
+            int requiredPeopleCount,
+            boolean facesClear,
+            boolean backgroundVisible,
+            String reason
+    ) {
+    }
+
     public record LodgingFormDataResponse(String templateName, Object payload, List<String> todos) {
     }
 
