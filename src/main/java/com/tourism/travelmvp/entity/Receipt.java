@@ -16,6 +16,7 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -44,6 +45,8 @@ public class Receipt extends BaseEntity {
     private ReceiptReviewStatus reviewStatus = ReceiptReviewStatus.PENDING;
 
     private Integer amount;
+
+    private LocalDateTime paymentDateTime;
 
     @Column(nullable = false)
     private Integer eligibleAmount = 0;

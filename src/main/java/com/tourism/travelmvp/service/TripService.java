@@ -35,6 +35,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -282,6 +284,8 @@ public class TripService {
         receipt.setUsageScope(usageScope);
         receipt.setReviewStatus(reviewOutcome.reviewStatus());
         receipt.setAmount(amountResponse.amount());
+        receipt.setPaymentDateTime(parseReceiptDateTime(
+                firstNonBlank(amountResponse.paymentDateTime(), ocrResponse.paymentDateTime())));
         receipt.setEligibleAmount(reviewOutcome.eligibleAmount());
         receipt.setReviewReason(reviewOutcome.reviewReason());
         receipt.setRawText(rawText);
@@ -1785,5 +1789,25 @@ public class TripService {
 
     private String nullSafe(String value) {
         return value == null ? "" : value;
+    }
+
+    private LocalDateTime parseReceiptDateTime(String value) {
+        String normalized = nullSafe(value).trim();
+        if (normalized.isBlank()) {
+            return null;
+        }
+        normalized = normalized.replace('/', '-').replace('.', '-');
+        List<DateTimeFormatter> formatters = List.of(
+                DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"),
+                DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
+        );
+        for (DateTimeFormatter formatter : formatters) {
+            try {
+                return LocalDateTime.parse(normalized, formatter);
+            } catch (DateTimeParseException ignored) {
+                // Try next formatter.
+            }
+        }
+        return null;
     }
 }

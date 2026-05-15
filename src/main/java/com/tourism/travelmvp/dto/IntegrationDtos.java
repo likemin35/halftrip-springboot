@@ -9,10 +9,20 @@ public final class IntegrationDtos {
     private IntegrationDtos() {
     }
 
-    public record ReceiptOcrResponse(PaymentType paymentType, String rawText, List<String> candidates) {
+    public record ReceiptOcrResponse(
+            PaymentType paymentType,
+            String paymentDateTime,
+            String rawText,
+            List<String> candidates
+    ) {
     }
 
-    public record ReceiptAmountResponse(Integer amount, String currency, String rawText) {
+    public record ReceiptAmountResponse(
+            Integer amount,
+            String currency,
+            String paymentDateTime,
+            String rawText
+    ) {
     }
 
     public record LodgingExtractResponse(String lodgingName,

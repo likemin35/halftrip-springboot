@@ -35,11 +35,13 @@ public class FastApiClient {
             Map<?, ?> data = nestedMap(response, "data");
             return new IntegrationDtos.ReceiptOcrResponse(
                     PaymentType.valueOf(stringValue(data, "payment_type", "UNKNOWN").toUpperCase()),
+                    stringValue(data, "payment_datetime", ""),
                     stringValue(data, "raw_text", ""),
                     TripMapper.stringList(data.get("candidates")));
         } catch (Exception exception) {
             return new IntegrationDtos.ReceiptOcrResponse(
                     PaymentType.UNKNOWN,
+                    "",
                     "",
                     List.of("TODO: FastAPI unavailable, fallback mock used"));
         }
@@ -61,9 +63,10 @@ public class FastApiClient {
             return new IntegrationDtos.ReceiptAmountResponse(
                     amount == null ? null : amount.intValue(),
                     stringValue(data, "currency", "KRW"),
+                    stringValue(data, "payment_datetime", ""),
                     stringValue(data, "raw_text", ""));
         } catch (Exception exception) {
-            return new IntegrationDtos.ReceiptAmountResponse(null, "KRW", "TODO: mock amount extraction");
+            return new IntegrationDtos.ReceiptAmountResponse(null, "KRW", "", "TODO: mock amount extraction");
         }
     }
 

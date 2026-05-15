@@ -98,6 +98,7 @@ public final class TripDtos {
                               ReceiptUsageScope usageScope,
                               ReceiptReviewStatus reviewStatus,
                               Integer amount,
+                              LocalDateTime paymentDateTime,
                               Integer eligibleAmount,
                               String reviewReason,
                               String rawText) {

@@ -72,6 +72,7 @@ public final class TripMapper {
                 receipt.getUsageScope(),
                 receipt.getReviewStatus(),
                 receipt.getAmount(),
+                receipt.getPaymentDateTime(),
                 receipt.getEligibleAmount(),
                 receipt.getReviewReason(),
                 receipt.getRawText());
